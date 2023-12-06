@@ -1,4 +1,3 @@
-
 fn day3_task1() {
     let lines = include_str!("day3.txt").lines();
 
@@ -18,7 +17,7 @@ fn day3_task1() {
             if line[j].is_digit(10) {
                 // println!("is digit: {}", line[j]);
                 let (number, start, end) = construct_number(line, j);
-                println!("Numbers: {}, Start: {}, End: {}", number, start, end);
+                // println!("Numbers: {}, Start: {}, End: {}", number, start, end);
 
                 if is_valid_part(start, end, i, &array) {
                     //println!("Valid parts: {}", number);
