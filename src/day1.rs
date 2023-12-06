@@ -1,4 +1,6 @@
-pub fn day1_task1() {
+use crate::day2::day2_task1;
+
+fn day1_task1() {
     let input = include_str!("day1.txt");
     let lines = input.lines();
     let mut sum: i32 = 0;
@@ -21,7 +23,7 @@ pub fn day1_task1() {
     println!("Day1 Task1: {}", sum)
 }
 
-pub fn day2_task2() {
+fn day2_task2() {
     let digits = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     let lines = include_str!("day1.txt").lines();
     let mut sum = 0;
@@ -67,4 +69,9 @@ fn convert_string_to_digit(string: &str) -> &str {
         "nine" => "9",
         default=> default
     }
+}
+
+fn main() {
+    day1_task1();
+    day1_task2();
 }

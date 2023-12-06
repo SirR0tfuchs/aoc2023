@@ -1,5 +1,5 @@
 
-pub fn day3_task1() {
+fn day3_task1() {
     let lines = include_str!("day3.txt").lines();
 
     let array: Vec<Vec<char>> = lines
@@ -68,7 +68,7 @@ fn is_valid_part(start:usize, end:usize, y: usize, array: &Vec<Vec<char>>) -> bo
     false
 }
 
-pub fn day3_task2() {
+fn day3_task2() {
     let lines = include_str!("day3.txt").lines();
 
     let mut numbers: Vec<Number> = vec![];
@@ -142,4 +142,9 @@ impl Gear {
         }
         false
     }
+}
+
+fn main() {
+    day3_task1();
+    day3_task2();
 }

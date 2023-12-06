@@ -2,7 +2,7 @@ use nom::bytes::complete::tag;
 use nom::character::complete::{alpha1, digit1};
 use nom::IResult;
 
-pub struct Dice {
+struct Dice {
     color: String,
     count: i32,
 }
@@ -18,7 +18,7 @@ impl Dice {
     }
 }
 
-pub fn day2_task1() {
+fn day2_task1() {
     let lines = include_str!("day2.txt").lines();
     let mut sum = 0;
     for line in lines {
@@ -85,4 +85,9 @@ pub fn day2_task2() {
         sum += min_red * min_blue * min_green;
     }
     println!("Day2 Task2: {}", sum)
+}
+
+fn main() {
+    day2_task1();
+    day2_task2();
 }
