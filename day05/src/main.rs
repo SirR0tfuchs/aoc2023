@@ -4,19 +4,18 @@ use std::cmp::min;
 use std::io::BufRead;
 use std::ops::Range;
 
+mod maps;
+mod parser;
+use parser::GardenMap;
 
-use nom::{
-    IResult,
-    character::complete as cc,
-    character::complete::space1,
-    bytes::complete::tag,
-    multi::separated_list1,
-    sequence::tuple,
-};
 
 fn main() {
-    day5_task1();
-    day5_task2();
+    // day5_task1();
+    // day5_task2();
+    let path = Path::new("src/day5.txt");
+    let contents = fs::read_to_string(path).expect("Should have been able to read file.");
+    let sol_res = maps::part_two(&contents);
+    println!("Sol res: {:?}", sol_res);
 }
 
 fn day5_task1() {
@@ -24,9 +23,9 @@ fn day5_task1() {
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
 
     let mut maps = contents.split("\n\n");
-    let seeds = parse_seeds(maps.next().expect("Has no first element.")).unwrap().1;
+    let seeds = parser::parse_seeds(maps.next().expect("Has no first element.")).unwrap().1;
 
-    let fields: Vec<Vec<GardenMap>> = maps.map(|block| parse_block(block).unwrap().1).collect();
+    let fields: Vec<Vec<GardenMap>> = maps.map(|block| parser::parse_block(block).unwrap().1).collect();
     let mut sol: i64 = std::i64::MAX;
 
     for seed in seeds {
@@ -59,57 +58,18 @@ fn find_translation(translations: &Vec<i64>, field: &Vec<GardenMap>) -> Vec<i64>
     new_translations
 }
 
-#[derive(Clone, Copy)]
-struct GardenMap {
-    dest_range_start: i64,
-    source_range_start: i64,
-    length: i64,
-}
 
-impl GardenMap {
-    fn source_range_end(self,) -> i64 {
-        self.source_range_start + self.length
-    }
-    fn dest_range_end(self,) -> i64 {
-        self.dest_range_start + self.length
-    }
-}
 
-fn parse_block(i: &str) -> IResult<&str, Vec<GardenMap>> {
-    let (i, _) = parse_name(i)?;
-    let (i, garden_maps) = separated_list1(tag("\n"), parse_line)(i)?;
-    Ok((i, garden_maps))
-}
-
-fn parse_name(i: &str) -> IResult<&str, String> {
-    // seed-to-soil map:\n
-    let (i, (from, _, _, _, to, _, _)) = tuple((cc::alphanumeric1, tag("-"), cc::alphanumeric1, tag("-"), cc::alphanumeric1, space1, tag("map:\n")))(i)?;
-    Ok((i, format!("{from}-{to}")))
-}
-
-fn parse_line(i: &str) -> IResult<&str, GardenMap> {
-    let (i, (dest_range_start, _, source_range_start, _, length)) = tuple((cc::i64, space1, cc::i64, space1, cc::i64))(i)?;
-    Ok((i, GardenMap{
-        dest_range_start,
-        source_range_start,
-        length,
-    }))
-}
-
-fn parse_seeds(i: &str) -> IResult<&str, Vec<i64>> {
-    let (i, (_, seeds)) = tuple((tag("seeds: "), separated_list1(tag(" "), cc::i64)))(i)?;
-    Ok((i, seeds))
-}
 
 fn day5_task2() {
     let path = Path::new("src/day5.txt");
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
 
     let mut maps = contents.split("\n\n");
-    let seeds = parse_seeds(maps.next().expect("Has no first element.")).unwrap().1;
+    let seeds = parser::parse_seeds(maps.next().expect("Has no first element.")).unwrap().1;
     let seed_ranges: Vec<Range<i64>> = seeds.chunks(2).map(|x| x[0]..(x[0]+x[1])).collect();
 
-    let fields: Vec<Vec<GardenMap>> = maps.map(|block| parse_block(block).unwrap().1).collect();
+    let fields: Vec<Vec<GardenMap>> = maps.map(|block| parser::parse_block(block).unwrap().1).collect();
     let mut sol: i64 = std::i64::MAX;
 
     let soil_maps = fields.last().unwrap();
