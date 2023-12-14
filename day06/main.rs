@@ -12,7 +12,6 @@ use nom::{
 };
 
 use std::iter::zip;
-use std::net::Incoming;
 
 struct Race {
     time: i64,
@@ -43,7 +42,7 @@ impl Race {
 }
 
 fn main() {
-    let path = Path::new("src/day6.txt");
+    let path = Path::new("day06/day6.txt");
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
 
     day6_task1(contents.clone());

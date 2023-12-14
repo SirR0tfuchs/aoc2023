@@ -13,15 +13,12 @@ use nom::{
     multi::separated_list1,
 };
 
-mod task2;
-
-fn main() {
-    let path = Path::new("src/day7.txt");
+pub fn hehe() {
+    let path = Path::new("day07/day7.txt");
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
     let mut hands = parse_file(&contents).unwrap().1;
     hands.sort();
-    println!("Day7 Task1: {}", weight_hands(&hands));
-    task2::hehe();
+    println!("Day7 Task2: {}", weight_hands(&hands));
 }
 
 
@@ -64,19 +61,50 @@ impl Hand {
         if *counts[0] == 5 {
             HandType::FiveOfAKind
         } else if *counts[0] == 4 {
-            HandType::FourOfAKind
+            handle_joker(HandType::FourOfAKind, &self.cards)
         } else if *counts[0] == 3 && *counts[1] == 2 {
-            HandType::FullHouse
+            handle_joker(HandType::FullHouse, &self.cards)
         } else if *counts[0] == 3 {
-            HandType::ThreeOfAKind
+            handle_joker(HandType::ThreeOfAKind, &self.cards)
         } else if *counts[0] == 2 && *counts[1] == 2 {
-            HandType::TwoPair
+            handle_joker(HandType::TwoPair, &self.cards)
         } else if *counts[0] == 1 {
-            HandType::HighCard
+            handle_joker(HandType::HighCard, &self.cards)
         } else {
-            HandType::OnePair
+            handle_joker(HandType::OnePair, &self.cards)
         }
     }
+}
+
+fn handle_joker(current_type: HandType, cards: &String) -> HandType {
+    let num_joker = cards.chars().filter(|char| *char == 'J').count();
+    if num_joker == 0 {
+        return current_type;
+    }
+    let after_joker = match current_type {
+        HandType::FourOfAKind => HandType::FiveOfAKind,
+        HandType::FullHouse => if num_joker == 1 {
+            HandType::FourOfAKind
+        } else {
+            HandType::FiveOfAKind
+        },
+        HandType::ThreeOfAKind => if num_joker == 1 {
+            HandType::FourOfAKind
+        } else if num_joker == 3 {
+            HandType::FourOfAKind
+        } else {
+            HandType::FiveOfAKind
+        }
+        HandType::TwoPair => if num_joker == 2 {
+            HandType::FourOfAKind
+        } else {
+            HandType::FullHouse
+        },
+        HandType::OnePair => HandType::ThreeOfAKind,
+        HandType::HighCard => HandType::OnePair,
+        default => default
+    };
+    after_joker
 }
 
 impl PartialEq for Hand {
@@ -91,7 +119,7 @@ impl PartialOrd for Hand {
             ('A', 14),
             ('K', 13),
             ('Q', 12),
-            ('J', 11),
+            ('J', 1),
             ('T', 10),
             ('9', 9),
             ('8', 8),
@@ -135,14 +163,14 @@ mod tests {
     use super::weight_hands;
 
     #[test]
-    fn test_hand_types() {
+    fn test_hand_types2() {
         let hand1 = Hand { cards: "424KT".to_string(), bid: 464 };
         let hand2 = Hand { cards: "3J4QA".to_string(), bid: 464 };
         let hand3 = Hand { cards: "AAAAA".to_string(), bid: 464 };
 
-        assert_eq!(hand1.hand_type(), HandType::OnePair, "Two 4's");
-        assert_eq!(hand2.hand_type(), HandType::HighCard, "All different");
-        assert_eq!(hand3.hand_type(), HandType::FiveOfAKind, "Five of a kind");
+        assert_eq!(hand1.hand_type(), HandType::OnePair);
+        assert_eq!(hand2.hand_type(), HandType::OnePair);
+        assert_eq!(hand3.hand_type(), HandType::FiveOfAKind);
 
         assert_eq!(hand3.partial_cmp(&hand1), Some(Ordering::Greater));
         assert_eq!(hand2.partial_cmp(&hand1), Some(Ordering::Less));
@@ -150,16 +178,27 @@ mod tests {
     }
 
     #[test]
-    fn test_example() {
+    fn test_example2() {
         let hand1 = Hand {cards: "32T3K".to_string(), bid: 765};
         let hand2 = Hand {cards: "T55J5".to_string(), bid: 684};
         let hand3 = Hand {cards: "KK677".to_string(), bid: 28};
         let hand4 = Hand {cards: "KTJJT".to_string(), bid: 220};
         let hand5 = Hand {cards: "QQQJA".to_string(), bid: 483};
 
+
         let mut hands = vec![hand1, hand2, hand3, hand4, hand5];
         hands.sort();
-        assert_eq!(weight_hands(&hands), 6440);
+
+        assert_eq!(weight_hands(&hands), 5905);
+    }
+
+    #[test]
+    fn four_queens_less_four_kings() {
+        let hand4 = Hand {cards: "KTJJT".to_string(), bid: 220};
+        let hand5 = Hand {cards: "QQQJA".to_string(), bid: 483};
+        assert_eq!(hand5.hand_type(), HandType::FourOfAKind, "Four tens");
+        assert_eq!(hand4.hand_type(), HandType::FourOfAKind);
+        assert_eq!(hand5.partial_cmp(&hand4), Some(Ordering::Less));
     }
 }
 

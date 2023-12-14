@@ -13,7 +13,7 @@ use nom::{
 };
 
 fn main() {
-    let path = Path::new("src/day8.txt");
+    let path = Path::new("day08/day8.txt");
     let content = fs::read_to_string(path).expect("Could not read in.");
 
     println!("Day8 Task1: {}", task1(content.clone(), "AAA"));
@@ -61,9 +61,9 @@ fn helper(input: String, start: &str) -> usize {
 }
 
 fn task2(input: String) -> usize {
-    let (sequence, labyrinth_map) = parse_input(&input).expect("Parsing failed").1;
+    let (_, labyrinth_map) = parse_input(&input).expect("Parsing failed").1;
 
-    let mut currents = labyrinth_map.clone().into_keys().filter(|x| x.chars().nth(2).expect("No 3 letters?") == 'A').collect::<Vec<&str>>();
+    let currents = labyrinth_map.clone().into_keys().filter(|x| x.chars().nth(2).expect("No 3 letters?") == 'A').collect::<Vec<&str>>();
     let counts: Vec<usize> = currents.into_iter().map(|x| helper(input.clone(), x)).collect();
     let mut sol = *counts.first().expect("No first element") as i64;
     for count in counts {
@@ -110,7 +110,7 @@ mod tests {
 
     #[test]
     fn test_parsing() {
-        let path = Path::new("src/day8_test.txt");
+        let path = Path::new("day08/day8_test.txt");
         let content = fs::read_to_string(path).expect("Could not read in.");
 
         let (sequence, labyrinth_map) = parse_input(&content).unwrap().1;
@@ -125,7 +125,7 @@ mod tests {
 
     #[test]
     fn test_task1() {
-        let path = Path::new("src/day8_test.txt");
+        let path = Path::new("day08/day8_test.txt");
         let content = fs::read_to_string(path).expect("Could not read in.");
 
         assert_eq!(task1(content.clone(), "AAA"), 6);
@@ -133,7 +133,7 @@ mod tests {
 
     #[test]
     fn test_task2() {
-        let path = Path::new("src/day8_test2.txt");
+        let path = Path::new("day08/day8_test2.txt");
         let content = fs::read_to_string(path).expect("Could not read in.");
 
         assert_eq!(task2(content.clone()), 6);

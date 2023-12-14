@@ -6,7 +6,7 @@ fn main() {
 }
 
 fn day4_task1() {
-    let cards_file_path = path::Path::new("src/day4.txt");
+    let cards_file_path = path::Path::new("day04/day4.txt");
     let _cards_file_path_str = cards_file_path.display();
 
     let mut sum = 0;
@@ -30,8 +30,7 @@ fn day4_task1() {
 }
 
 fn day4_task2() {
-    let cards_file_path = path::Path::new("src/day4.txt");
-    let mut sum = 0;
+    let cards_file_path = path::Path::new("day04/day4.txt");
     let contents = fs::read_to_string(cards_file_path).expect("Haha");
     let lines: Vec<&str> = contents.trim().split("\n")
         .map(|line| line.split(":").nth(1).expect("Could not split correctly."))
@@ -52,8 +51,7 @@ fn day4_task2() {
         for i in index+1..upper_bound {
             times[i] += 1 * times[index];
         }
-        println!("Times: {}, Index: {}", times[index], index)
     }
-    sum = times.into_iter().sum();
+    let sum: i32 = times.into_iter().sum();
     println!("Day4 Task2: {}", sum);
 }

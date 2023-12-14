@@ -1,7 +1,6 @@
 use std::path::Path;
 use::std::fs;
 use std::cmp::min;
-use std::io::BufRead;
 use std::ops::Range;
 
 mod maps;
@@ -12,14 +11,14 @@ use parser::GardenMap;
 fn main() {
     // day5_task1();
     // day5_task2();
-    let path = Path::new("src/day5.txt");
+    let path = Path::new("day05/day5.txt");
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
     let sol_res = maps::part_two(&contents);
     println!("Sol res: {:?}", sol_res);
 }
 
 fn day5_task1() {
-    let path = Path::new("src/day5.txt");
+    let path = Path::new("day05/day5.txt");
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
 
     let mut maps = contents.split("\n\n");
@@ -62,7 +61,7 @@ fn find_translation(translations: &Vec<i64>, field: &Vec<GardenMap>) -> Vec<i64>
 
 
 fn day5_task2() {
-    let path = Path::new("src/day5.txt");
+    let path = Path::new("day05/day5.txt");
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
 
     let mut maps = contents.split("\n\n");
