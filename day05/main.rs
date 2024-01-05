@@ -1,12 +1,11 @@
-use std::path::Path;
-use::std::fs;
+use ::std::fs;
 use std::cmp::min;
 use std::ops::Range;
+use std::path::Path;
 
 mod maps;
 mod parser;
 use parser::GardenMap;
-
 
 fn main() {
     // day5_task1();
@@ -22,9 +21,13 @@ fn day5_task1() {
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
 
     let mut maps = contents.split("\n\n");
-    let seeds = parser::parse_seeds(maps.next().expect("Has no first element.")).unwrap().1;
+    let seeds = parser::parse_seeds(maps.next().expect("Has no first element."))
+        .unwrap()
+        .1;
 
-    let fields: Vec<Vec<GardenMap>> = maps.map(|block| parser::parse_block(block).unwrap().1).collect();
+    let fields: Vec<Vec<GardenMap>> = maps
+        .map(|block| parser::parse_block(block).unwrap().1)
+        .collect();
     let mut sol: i64 = std::i64::MAX;
 
     for seed in seeds {
@@ -57,26 +60,32 @@ fn find_translation(translations: &Vec<i64>, field: &Vec<GardenMap>) -> Vec<i64>
     new_translations
 }
 
-
-
-
 fn day5_task2() {
     let path = Path::new("day05/day5.txt");
     let contents = fs::read_to_string(path).expect("Should have been able to read file.");
 
     let mut maps = contents.split("\n\n");
-    let seeds = parser::parse_seeds(maps.next().expect("Has no first element.")).unwrap().1;
-    let seed_ranges: Vec<Range<i64>> = seeds.chunks(2).map(|x| x[0]..(x[0]+x[1])).collect();
+    let seeds = parser::parse_seeds(maps.next().expect("Has no first element."))
+        .unwrap()
+        .1;
+    let seed_ranges: Vec<Range<i64>> = seeds.chunks(2).map(|x| x[0]..(x[0] + x[1])).collect();
 
-    let fields: Vec<Vec<GardenMap>> = maps.map(|block| parser::parse_block(block).unwrap().1).collect();
+    let fields: Vec<Vec<GardenMap>> = maps
+        .map(|block| parser::parse_block(block).unwrap().1)
+        .collect();
     let mut sol: i64 = std::i64::MAX;
 
     let soil_maps = fields.last().unwrap();
-    let soil_ranges: Vec<Range<i64>> = soil_maps.into_iter().map(|map| map.dest_range_start..map.dest_range_end()).collect();
+    let soil_ranges: Vec<Range<i64>> = soil_maps
+        .into_iter()
+        .map(|map| map.dest_range_start..map.dest_range_end())
+        .collect();
 
     for soil_range in soil_ranges {
         for index in soil_range {
-            if index >= sol { break; }
+            if index >= sol {
+                break;
+            }
             if is_valid_soil(index, &fields, &seed_ranges) {
                 sol = min(sol, index);
                 println!("Current min: {}", sol)
@@ -86,7 +95,11 @@ fn day5_task2() {
     println!("Day5 Task2: {}", sol)
 }
 
-fn is_valid_soil(index: i64, garden_maps: &Vec<Vec<GardenMap>>, seed_ranges: &Vec<Range<i64>>) -> bool {
+fn is_valid_soil(
+    index: i64,
+    garden_maps: &Vec<Vec<GardenMap>>,
+    seed_ranges: &Vec<Range<i64>>,
+) -> bool {
     let mut map_value = index;
     for garden_map in garden_maps.into_iter().rev() {
         for map in garden_map {
@@ -102,7 +115,7 @@ fn is_valid_soil(index: i64, garden_maps: &Vec<Vec<GardenMap>>, seed_ranges: &Ve
 fn check_values_in_seed_ranges(map_value: i64, seed_ranges: &Vec<Range<i64>>) -> bool {
     for seed_range in seed_ranges {
         if seed_range.contains(&map_value) {
-            return true
+            return true;
         }
     }
     false

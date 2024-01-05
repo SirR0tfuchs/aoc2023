@@ -1,15 +1,11 @@
+use num::integer::lcm;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
-use num::integer::lcm;
-
 
 use nom::{
-    IResult,
-    bytes::complete::tag,
-    sequence::tuple,
-    character::complete::alphanumeric1,
-    multi::separated_list1,
+    bytes::complete::tag, character::complete::alphanumeric1, multi::separated_list1,
+    sequence::tuple, IResult,
 };
 
 fn main() {
@@ -27,7 +23,7 @@ fn task1(input: String, start: &str) -> usize {
     let mut count = 0;
     let mut found = false;
     while !found {
-        match sequence.chars().nth(count%sequence.len()) {
+        match sequence.chars().nth(count % sequence.len()) {
             Some('L') => current = labyrinth_map.get(current).unwrap().0,
             Some('R') => current = labyrinth_map.get(current).unwrap().1,
             _ => (),
@@ -47,7 +43,7 @@ fn helper(input: String, start: &str) -> usize {
     let mut count = 0;
     let mut found = false;
     while !found {
-        match sequence.chars().nth(count%sequence.len()) {
+        match sequence.chars().nth(count % sequence.len()) {
             Some('L') => current = labyrinth_map.get(current).unwrap().0,
             Some('R') => current = labyrinth_map.get(current).unwrap().1,
             _ => (),
@@ -63,8 +59,15 @@ fn helper(input: String, start: &str) -> usize {
 fn task2(input: String) -> usize {
     let (_, labyrinth_map) = parse_input(&input).expect("Parsing failed").1;
 
-    let currents = labyrinth_map.clone().into_keys().filter(|x| x.chars().nth(2).expect("No 3 letters?") == 'A').collect::<Vec<&str>>();
-    let counts: Vec<usize> = currents.into_iter().map(|x| helper(input.clone(), x)).collect();
+    let currents = labyrinth_map
+        .clone()
+        .into_keys()
+        .filter(|x| x.chars().nth(2).expect("No 3 letters?") == 'A')
+        .collect::<Vec<&str>>();
+    let counts: Vec<usize> = currents
+        .into_iter()
+        .map(|x| helper(input.clone(), x))
+        .collect();
     let mut sol = *counts.first().expect("No first element") as i64;
     for count in counts {
         sol = lcm(sol, count as i64);
@@ -94,19 +97,25 @@ fn parse_map(i: &str) -> IResult<&str, HashMap<&str, (&str, &str)>> {
 }
 
 fn parse_map_line(i: &str) -> IResult<&str, (&str, &str, &str)> {
-    let (i, (from, _, left, _, right, _)) = tuple((alphanumeric1, tag(" = ("), alphanumeric1, tag(", "), alphanumeric1, tag(")")))(i)?;
+    let (i, (from, _, left, _, right, _)) = tuple((
+        alphanumeric1,
+        tag(" = ("),
+        alphanumeric1,
+        tag(", "),
+        alphanumeric1,
+        tag(")"),
+    ))(i)?;
     Ok((i, (from, left, right)))
 }
 
-
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-    use std::fs;
     use super::parse_input;
-    use std::path::Path;
     use super::task1;
     use super::task2;
+    use std::collections::HashMap;
+    use std::fs;
+    use std::path::Path;
 
     #[test]
     fn test_parsing() {
@@ -118,7 +127,8 @@ mod tests {
             ("AAA", ("BBB", "BBB")),
             ("BBB", ("AAA", "ZZZ")),
             ("ZZZ", ("ZZZ", "ZZZ")),
-        ].into();
+        ]
+        .into();
         assert_eq!(sequence, "LLR".to_string());
         assert_eq!(labyrinth_map, compare_map);
     }

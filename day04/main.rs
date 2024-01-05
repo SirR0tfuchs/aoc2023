@@ -13,11 +13,27 @@ fn day4_task1() {
 
     let contents = fs::read_to_string(cards_file_path).expect("Could not read file.");
 
-    let lines: Vec<&str> = contents.trim().split("\n").map(|line| line.split(":").nth(1).expect("Couldnt split correctly.")).collect();
+    let lines: Vec<&str> = contents
+        .trim()
+        .split("\n")
+        .map(|line| line.split(":").nth(1).expect("Couldnt split correctly."))
+        .collect();
     for (_index, line) in lines.iter().enumerate() {
         let mut cards = line.split("|");
-        let winning: Vec<i32> = cards.nth(0).expect("No 0th").split(" ").filter(|x| !x.trim().is_empty()).map(|numbers| numbers.parse::<i32>().expect("Couldnt make number 1")).collect();
-        let draws: Vec<i32> = cards.nth(0).expect("No 1th").split(" ").filter(|x| !x.trim().is_empty()).map(|numbers| numbers.parse::<i32>().expect("Couldnt make number")).collect();
+        let winning: Vec<i32> = cards
+            .nth(0)
+            .expect("No 0th")
+            .split(" ")
+            .filter(|x| !x.trim().is_empty())
+            .map(|numbers| numbers.parse::<i32>().expect("Couldnt make number 1"))
+            .collect();
+        let draws: Vec<i32> = cards
+            .nth(0)
+            .expect("No 1th")
+            .split(" ")
+            .filter(|x| !x.trim().is_empty())
+            .map(|numbers| numbers.parse::<i32>().expect("Couldnt make number"))
+            .collect();
 
         let num_winning_cards = winning.iter().filter(|x| draws.contains(x)).count();
         // println!("Line {}, has {} winning cards.", index, num_winning_cards);
@@ -32,15 +48,29 @@ fn day4_task1() {
 fn day4_task2() {
     let cards_file_path = path::Path::new("day04/day4.txt");
     let contents = fs::read_to_string(cards_file_path).expect("Haha");
-    let lines: Vec<&str> = contents.trim().split("\n")
+    let lines: Vec<&str> = contents
+        .trim()
+        .split("\n")
         .map(|line| line.split(":").nth(1).expect("Could not split correctly."))
         .collect();
     let mut times = vec![1; lines.len() as usize];
     for (index, line) in lines.iter().enumerate() {
         // println!("Line: {}", line);
         let mut cards = line.split("|");
-        let winning: Vec<i32> = cards.nth(0).expect("No 0th").split(" ").filter(|x| !x.trim().is_empty()).map(|numbers| numbers.parse::<i32>().expect("Couldnt make number 1")).collect();
-        let draws: Vec<i32> = cards.nth(0).expect("No 1th").split(" ").filter(|x| !x.trim().is_empty()).map(|numbers| numbers.parse::<i32>().expect("Couldnt make number")).collect();
+        let winning: Vec<i32> = cards
+            .nth(0)
+            .expect("No 0th")
+            .split(" ")
+            .filter(|x| !x.trim().is_empty())
+            .map(|numbers| numbers.parse::<i32>().expect("Couldnt make number 1"))
+            .collect();
+        let draws: Vec<i32> = cards
+            .nth(0)
+            .expect("No 1th")
+            .split(" ")
+            .filter(|x| !x.trim().is_empty())
+            .map(|numbers| numbers.parse::<i32>().expect("Couldnt make number"))
+            .collect();
 
         let num_winning_cards = winning.iter().filter(|x| draws.contains(x)).count();
 
@@ -48,7 +78,7 @@ fn day4_task2() {
         if upper_bound >= lines.len() {
             upper_bound = lines.len();
         }
-        for i in index+1..upper_bound {
+        for i in index + 1..upper_bound {
             times[i] += 1 * times[index];
         }
     }

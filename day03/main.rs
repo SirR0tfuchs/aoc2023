@@ -2,9 +2,7 @@ fn day3_task1() {
     let lines = include_str!("day3.txt").lines();
 
     let array: Vec<Vec<char>> = lines
-        .map(|line| line.chars()
-            .map(|char| char)
-            .collect())
+        .map(|line| line.chars().map(|char| char).collect())
         .collect();
     //println!("Array: {:?}", array);
 
@@ -48,19 +46,23 @@ fn construct_number(line: &Vec<char>, index: usize) -> (i32, usize, usize) {
     (number.parse().unwrap(), index, end - 1usize)
 }
 
-fn is_valid_part(start:usize, end:usize, y: usize, array: &Vec<Vec<char>>) -> bool{
+fn is_valid_part(start: usize, end: usize, y: usize, array: &Vec<Vec<char>>) -> bool {
     let width = array[y].len();
     let height = array.len();
 
-    let from_y = if y as i32 - 1 < 0 {y} else {y-1};
-    let to_y = if y + 1 >= height {y} else {y + 1};
-    let from_x = if start as i32 - 1 < 0 {start} else {start - 1};
-    let to_x = if end + 1 >= width {end} else {end+1};
+    let from_y = if y as i32 - 1 < 0 { y } else { y - 1 };
+    let to_y = if y + 1 >= height { y } else { y + 1 };
+    let from_x = if start as i32 - 1 < 0 {
+        start
+    } else {
+        start - 1
+    };
+    let to_x = if end + 1 >= width { end } else { end + 1 };
 
     for i in from_y..=to_y {
         for j in from_x..=to_x {
             if !array[i][j].is_digit(10) && array[i][j] != '.' {
-                return true
+                return true;
             }
         }
     }
@@ -74,9 +76,7 @@ fn day3_task2() {
     let mut gears: Vec<Gear> = vec![];
 
     let array: Vec<Vec<char>> = lines
-        .map(|line| line.chars()
-            .map(|char| char)
-            .collect())
+        .map(|line| line.chars().map(|char| char).collect())
         .collect();
 
     for i in 0..array.len() {
@@ -85,7 +85,7 @@ fn day3_task2() {
         while j < array[i].len() {
             if line[j].is_digit(10) {
                 let (number, x_start, x_end) = construct_number(line, j);
-                numbers.push(Number{
+                numbers.push(Number {
                     value: number,
                     x_start,
                     x_end,
@@ -94,10 +94,7 @@ fn day3_task2() {
                 j = x_end;
             }
             if line[j] == '*' {
-                gears.push(Gear {
-                    x: j,
-                    y: i,
-                })
+                gears.push(Gear { x: j, y: i })
             }
             j += 1;
         }
@@ -133,11 +130,11 @@ struct Gear {
 
 impl Gear {
     fn is_neighbor(self, number: &Number) -> bool {
-        let x_range = number.x_start as i32 - 1..=number.x_end as i32+1;
-        let y_range = number.y as i32 - 1..=number.y as i32 +1;
+        let x_range = number.x_start as i32 - 1..=number.x_end as i32 + 1;
+        let y_range = number.y as i32 - 1..=number.y as i32 + 1;
 
         if x_range.contains(&(self.x as i32)) && y_range.contains(&(self.y as i32)) {
-            return true
+            return true;
         }
         false
     }

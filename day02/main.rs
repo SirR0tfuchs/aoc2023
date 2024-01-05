@@ -13,7 +13,7 @@ impl Dice {
             "red" => self.count <= 12,
             "green" => self.count <= 13,
             "blue" => self.count <= 14,
-            _ => false
+            _ => false,
         }
     }
 }
@@ -56,10 +56,13 @@ fn extract_dice(input: &str) -> IResult<&str, Dice> {
     let (input, count) = digit1(input)?;
     let (input, color) = alpha1(input)?;
 
-    Ok((input, Dice{
-        color: color.to_string(),
-        count: count.parse::<i32>().unwrap()
-    }))
+    Ok((
+        input,
+        Dice {
+            color: color.to_string(),
+            count: count.parse::<i32>().unwrap(),
+        },
+    ))
 }
 
 pub fn day2_task2() {
@@ -70,7 +73,6 @@ pub fn day2_task2() {
         let _ = split.next().unwrap();
         let rest = split.next().unwrap().replace(" ", "");
 
-
         let rounds = rest.split(";");
         let mut dieces: Vec<Dice> = vec![];
         for round in rounds {
@@ -79,9 +81,24 @@ pub fn day2_task2() {
                 dieces.push(dice);
             }
         }
-        let min_red = dieces.iter().filter(|d| d.color == "red").map(|d| d.count).max().unwrap();
-        let min_blue = dieces.iter().filter(|d| d.color == "blue").map(|d| d.count).max().unwrap();
-        let min_green = dieces.iter().filter(|d| d.color == "green").map(|d| d.count).max().unwrap();
+        let min_red = dieces
+            .iter()
+            .filter(|d| d.color == "red")
+            .map(|d| d.count)
+            .max()
+            .unwrap();
+        let min_blue = dieces
+            .iter()
+            .filter(|d| d.color == "blue")
+            .map(|d| d.count)
+            .max()
+            .unwrap();
+        let min_green = dieces
+            .iter()
+            .filter(|d| d.color == "green")
+            .map(|d| d.count)
+            .max()
+            .unwrap();
         sum += min_red * min_blue * min_green;
     }
     println!("Day2 Task2: {}", sum)

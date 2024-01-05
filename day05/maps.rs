@@ -1,7 +1,6 @@
 use std::collections::BTreeSet;
 use std::str::FromStr;
 
-
 #[derive(Debug, PartialEq)]
 struct AlmanacMapEntry {
     dest_start: u64,

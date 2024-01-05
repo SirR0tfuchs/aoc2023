@@ -2,13 +2,8 @@ use std::fs;
 use std::path::Path;
 
 use nom::{
-    character::complete as cc,
-    character::complete::space1,
-    multi::separated_list1,
-    bytes::complete::tag,
-    character::complete::alphanumeric1,
-    sequence::tuple,
-    IResult,
+    bytes::complete::tag, character::complete as cc, character::complete::alphanumeric1,
+    character::complete::space1, multi::separated_list1, sequence::tuple, IResult,
 };
 
 use std::iter::zip;
@@ -37,7 +32,7 @@ impl Race {
         } else if num_winning_races != 0 && remainder != 0 {
             num_winning_races -= 2;
         }
-        return num_winning_races
+        return num_winning_races;
     }
 }
 
@@ -51,7 +46,10 @@ fn main() {
 
 fn day6_task1(input: String) {
     let races = parse_input(&input).unwrap().1;
-    let solution = races.into_iter().map(|race| race.count_winning_races()).product::<i64>();
+    let solution = races
+        .into_iter()
+        .map(|race| race.count_winning_races())
+        .product::<i64>();
     println!("Day6 Task1: {}", solution);
 }
 
@@ -61,7 +59,9 @@ fn parse_input(i: &str) -> IResult<&str, Vec<Race>> {
     let (i, (..)) = tuple((alphanumeric1, tag(":"), space1))(i)?;
     let (i, (list2, _)) = tuple((separated_list1(space1, cc::i64), tag("\n")))(i)?;
 
-    let races = zip(list1, list2).map(|(time, distance)| Race{time, distance}).collect();
+    let races = zip(list1, list2)
+        .map(|(time, distance)| Race { time, distance })
+        .collect();
     Ok((i, races))
 }
 

@@ -6,11 +6,8 @@ use std::iter::zip;
 use std::path::Path;
 
 use nom::{
+    bytes::complete::tag, character::complete as cc, multi::separated_list1, sequence::tuple,
     IResult,
-    bytes::complete::tag,
-    sequence::tuple,
-    character::complete as cc,
-    multi::separated_list1,
 };
 
 pub fn hehe() {
@@ -20,7 +17,6 @@ pub fn hehe() {
     hands.sort();
     println!("Day7 Task2: {}", weight_hands(&hands));
 }
-
 
 fn weight_hands(hands: &Vec<Hand>) -> i32 {
     let mut sum = 0;
@@ -83,26 +79,32 @@ fn handle_joker(current_type: HandType, cards: &String) -> HandType {
     }
     let after_joker = match current_type {
         HandType::FourOfAKind => HandType::FiveOfAKind,
-        HandType::FullHouse => if num_joker == 1 {
-            HandType::FourOfAKind
-        } else {
-            HandType::FiveOfAKind
-        },
-        HandType::ThreeOfAKind => if num_joker == 1 {
-            HandType::FourOfAKind
-        } else if num_joker == 3 {
-            HandType::FourOfAKind
-        } else {
-            HandType::FiveOfAKind
+        HandType::FullHouse => {
+            if num_joker == 1 {
+                HandType::FourOfAKind
+            } else {
+                HandType::FiveOfAKind
+            }
         }
-        HandType::TwoPair => if num_joker == 2 {
-            HandType::FourOfAKind
-        } else {
-            HandType::FullHouse
-        },
+        HandType::ThreeOfAKind => {
+            if num_joker == 1 {
+                HandType::FourOfAKind
+            } else if num_joker == 3 {
+                HandType::FourOfAKind
+            } else {
+                HandType::FiveOfAKind
+            }
+        }
+        HandType::TwoPair => {
+            if num_joker == 2 {
+                HandType::FourOfAKind
+            } else {
+                HandType::FullHouse
+            }
+        }
         HandType::OnePair => HandType::ThreeOfAKind,
         HandType::HighCard => HandType::OnePair,
-        default => default
+        default => default,
     };
     after_joker
 }
@@ -129,44 +131,58 @@ impl PartialOrd for Hand {
             ('4', 4),
             ('3', 3),
             ('2', 2),
-        ].into();
+        ]
+        .into();
         return if self.hand_type().eq(&other.hand_type()) {
             for (self_char, other_char) in zip(self.cards.chars(), other.cards.chars()) {
                 if self_char != other_char {
-                    return Some(lookup.get(&self_char).unwrap().cmp(lookup.get(&other_char).unwrap()))
+                    return Some(
+                        lookup
+                            .get(&self_char)
+                            .unwrap()
+                            .cmp(lookup.get(&other_char).unwrap()),
+                    );
                 }
             }
             Some(Ordering::Equal)
         } else {
             self.hand_type().partial_cmp(&other.hand_type())
-        }
+        };
     }
 }
 
 impl Ord for Hand {
     fn cmp(&self, other: &Self) -> Ordering {
         if self.hand_type() > other.hand_type() {
-            return Greater
+            return Greater;
         } else if self.hand_type() < other.hand_type() {
-            return Less
+            return Less;
         }
         self.partial_cmp(other).unwrap()
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use std::cmp::Ordering;
+    use super::weight_hands;
     use super::Hand;
     use super::HandType;
-    use super::weight_hands;
+    use std::cmp::Ordering;
 
     #[test]
     fn test_hand_types2() {
-        let hand1 = Hand { cards: "424KT".to_string(), bid: 464 };
-        let hand2 = Hand { cards: "3J4QA".to_string(), bid: 464 };
-        let hand3 = Hand { cards: "AAAAA".to_string(), bid: 464 };
+        let hand1 = Hand {
+            cards: "424KT".to_string(),
+            bid: 464,
+        };
+        let hand2 = Hand {
+            cards: "3J4QA".to_string(),
+            bid: 464,
+        };
+        let hand3 = Hand {
+            cards: "AAAAA".to_string(),
+            bid: 464,
+        };
 
         assert_eq!(hand1.hand_type(), HandType::OnePair);
         assert_eq!(hand2.hand_type(), HandType::OnePair);
@@ -179,12 +195,26 @@ mod tests {
 
     #[test]
     fn test_example2() {
-        let hand1 = Hand {cards: "32T3K".to_string(), bid: 765};
-        let hand2 = Hand {cards: "T55J5".to_string(), bid: 684};
-        let hand3 = Hand {cards: "KK677".to_string(), bid: 28};
-        let hand4 = Hand {cards: "KTJJT".to_string(), bid: 220};
-        let hand5 = Hand {cards: "QQQJA".to_string(), bid: 483};
-
+        let hand1 = Hand {
+            cards: "32T3K".to_string(),
+            bid: 765,
+        };
+        let hand2 = Hand {
+            cards: "T55J5".to_string(),
+            bid: 684,
+        };
+        let hand3 = Hand {
+            cards: "KK677".to_string(),
+            bid: 28,
+        };
+        let hand4 = Hand {
+            cards: "KTJJT".to_string(),
+            bid: 220,
+        };
+        let hand5 = Hand {
+            cards: "QQQJA".to_string(),
+            bid: 483,
+        };
 
         let mut hands = vec![hand1, hand2, hand3, hand4, hand5];
         hands.sort();
@@ -194,8 +224,14 @@ mod tests {
 
     #[test]
     fn four_queens_less_four_kings() {
-        let hand4 = Hand {cards: "KTJJT".to_string(), bid: 220};
-        let hand5 = Hand {cards: "QQQJA".to_string(), bid: 483};
+        let hand4 = Hand {
+            cards: "KTJJT".to_string(),
+            bid: 220,
+        };
+        let hand5 = Hand {
+            cards: "QQQJA".to_string(),
+            bid: 483,
+        };
         assert_eq!(hand5.hand_type(), HandType::FourOfAKind, "Four tens");
         assert_eq!(hand4.hand_type(), HandType::FourOfAKind);
         assert_eq!(hand5.partial_cmp(&hand4), Some(Ordering::Less));
@@ -209,5 +245,11 @@ fn parse_file(i: &str) -> IResult<&str, Vec<Hand>> {
 
 fn parse_hand(i: &str) -> IResult<&str, Hand> {
     let (i, (cards, _, bid)) = tuple((cc::alphanumeric1, cc::space1, cc::i32))(i)?;
-    Ok((i, Hand { cards: cards.to_string(), bid}))
+    Ok((
+        i,
+        Hand {
+            cards: cards.to_string(),
+            bid,
+        },
+    ))
 }

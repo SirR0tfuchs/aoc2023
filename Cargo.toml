@@ -39,8 +39,26 @@ path = "day08/main.rs"
 name = "day09"
 path = "day09/main.rs"
 
+[[bin]]
+name = "day10"
+path = "day10/day10.rs"
+
+[[bin]]
+name = "day11"
+path = "day11/day11.rs"
+
+[[bin]]
+name = "day12"
+path = "day12/day12.rs"
+
+[[bin]]
+name = "day13"
+path = "day13/day13.rs"
+
 
 [dependencies]
+array2d = "0.3.2"
+itertools = "0.12.0"
 nom = "7.1.3"
 num = "0.4.1"
 rangemap = "1.4.0"

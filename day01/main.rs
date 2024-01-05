@@ -22,7 +22,10 @@ fn day1_task1() {
 }
 
 fn day1_task2() {
-    let digits = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    let digits = [
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "1", "2", "3", "4",
+        "5", "6", "7", "8", "9",
+    ];
     let lines = include_str!("day1.txt").lines();
     let mut sum = 0;
     for line in lines {
@@ -65,7 +68,7 @@ fn convert_string_to_digit(string: &str) -> &str {
         "seven" => "7",
         "eight" => "8",
         "nine" => "9",
-        default=> default
+        default => default,
     }
 }
 
